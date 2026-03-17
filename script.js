@@ -73,8 +73,15 @@ function startQuiz(subject) {
 
 function runQuiz(questions) {
     let score = 0;
-    for (let i = 0; i < questions.length; i++) {
-        let userAns = prompt(questions[i].q);
+    let total = questions.length;
+
+    for (let i = 0; i < total; i++) {
+        let userAns = prompt("Question " + (i + 1) + " of " + total + "\n\n" + questions[i].q);
         if (userAns && userAns.toUpperCase() === questions[i].a) {
             score++;
         }
+    }
+
+    let percentage = (score / total) * 100;
+    alert("Result Summary:\n----------------\nScore: " + score + "/" + total + "\nPercentage: " + percentage + "%\nKeep studying!");
+}
