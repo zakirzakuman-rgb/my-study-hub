@@ -3,47 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zakir StudyHub | Grade 12</title>
+    <title>Grade 12 Matric Preparation</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <header>
-        <h1>Grade 12 Social Science Hub</h1>
-        <p>Prepared by Zakir - Study materials for Matric Exams</p>
+        <h1>Matric Exam Practice Center</h1>
+        <p>Master your subjects with real exam questions</p>
     </header>
 
-    <nav>
-        <a href="#">Home</a>
-        <a href="#">History</a>
-        <a href="#">Geography</a>
-        <a href="#">Economics</a>
-    </nav>
-<div class="resource-grid">
-    <div class="card">
-        <h3>History Quiz</h3>
-        <p>Unit 1 & 2 Exam Practice</p>
-        <button onclick="startSubjectQuiz('History')">Start Quiz</button>
+    <div class="container">
+        <div class="resource-grid">
+            <div class="card" onclick="startQuiz('English')"><h3>English</h3><p>100 Questions</p></div>
+            <div class="card" onclick="startQuiz('History')"><h3>History</h3><p>100 Questions</p></div>
+            <div class="card" onclick="startQuiz('Geography')"><h3>Geography</h3><p>100 Questions</p></div>
+            <div class="card" onclick="startQuiz('Economics')"><h3>Economics</h3><p>100 Questions</p></div>
+            <div class="card" onclick="startQuiz('Aptitude')"><h3>Aptitude</h3><p>100 Questions</p></div>
+        </div>
     </div>
-
-    <div class="card">
-        <h3>Geography Quiz</h3>
-        <p>Map reading and Physical Geography</p>
-        <button onclick="startSubjectQuiz('Geography')">Start Quiz</button>
-    </div>
-
-    <div class="card">
-        <h3>Economics Quiz</h3>
-        <p>Fundamental concepts of Economics</p>
-        <button onclick="startSubjectQuiz('Economics')">Start Quiz</button>
-    </div>
-</div>
-  
-
-    <footer>
-        <p>&copy; 2026 Zakir Tech. All rights reserved.</p>
-    </footer>
-
     <script src="script.js"></script>
 </body>
 </html>
