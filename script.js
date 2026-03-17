@@ -8,7 +8,7 @@ function startSubjectQuiz(subject) {
         let q2 = prompt("History: Who was the founder of the Aksumite Empire?\nA) Menelik I\nB) Zoskales");
         if (q2 && q2.toUpperCase() === "B") score++;
         
-        alert("Zakir, your History score is: " + score + "/2");
+        alert("🤫, your History score is: " + score + "/2");
 
     } else if (subject === 'Geography') {
         let g1 = prompt("Geography: Which river is the longest in the world?\nA) Nile\nB) Amazon");
@@ -17,12 +17,12 @@ function startSubjectQuiz(subject) {
         let g2 = prompt("Geography: What is the highest mountain in Africa?\nA) Ras Dashen\nB) Kilimanjaro");
         if (g2 && g2.toUpperCase() === "B") score++;
         
-        alert("Zakir, your Geography score is: " + score + "/2");
+        alert("🤫, your Geography score is: " + score + "/2");
 
     } else if (subject === 'Economics') {
         let e1 = prompt("Economics: What is the main problem in Economics?\nA) Money\nB) Scarcity");
         if (e1 && e1.toUpperCase() === "B") score++;
         
-        alert("Zakir, your Economics score is: " + score + "/1");
+        alert("🤫, your Economics score is: " + score + "/1");
     }
 }
