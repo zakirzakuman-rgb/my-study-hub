@@ -81,3 +81,25 @@ function runQuiz(questions) {
     }
     alert("Great job!\nYour Final Score: " + score + "/" + questions.length + "\nKeep practicing for your Matric!");
 }
+function startQuiz(subject) {
+    // እዚህ ጋር score = 0 መሆኑን አረጋግጥ፤ ይህም አዲስ ሰው ሲጀምር ውጤቱ ከዜሮ እንዲነሳ ያደርገዋል
+    let score = 0; 
+    let questions = [];
+
+    if (subject === 'English') {
+        // 10 ጥያቄዎች እዚህ ይገባሉ
+    } else if (subject === 'History') {
+        // 10 ጥያቄዎች እዚህ ይገባሉ
+    }
+    
+    // ጥያቄዎቹን እንዲያነብ ማድረግ
+    for (let i = 0; i < questions.length; i++) {
+        let userAns = prompt("ጥያቄ " + (i + 1) + "/" + questions.length + "\n" + questions[i].q);
+        if (userAns && userAns.toUpperCase() === questions[i].a) {
+            score++;
+        }
+    }
+    
+    // ውጤቱን ማሳያ
+    alert("ውጤትህ: " + score + "/" + questions.length);
+}
