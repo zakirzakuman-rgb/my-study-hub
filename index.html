@@ -15,47 +15,37 @@
             <p>Please log in to start your practice</p>
             <input type="text" id="username" placeholder="Enter Your Name">
             <input type="password" id="password" placeholder="Enter Password (zakir123)">
-            <button onclick="checkLogin()">Enter Quiz Center</button>
-        </div>
+     <div class="subject-container">
+    
+    <div class="subject-card">
+        <div class="icon">Math</div>
+        <h3>Mathematics</h3>
+        <p>Algebra & Geometry</p>
+        <button onclick="startQuiz('math')">Start Practice</button>
     </div>
 
-    <div id="main-quiz-page" style="display: none;">
-        <header>
-            <h1>Grade 12 Matric Practice</h1>
-            <p id="welcome-text"></p>
-        </header>
-
-        <div class="container">
-            <div class="resource-grid">
-                <div class="card" onclick="startQuiz('English')">
-                    <h3>English</h3>
-                    <p>Grammar & Vocabulary</p>
-                </div>
-                <div class="card" onclick="startQuiz('History')">
-                    <h3>History</h3>
-                    <p>World & Ethiopian History</p>
-                </div>
-                <div class="card" onclick="startQuiz('Geography')">
-                    <h3>Geography</h3>
-                    <p>Physical & Human Geography</p>
-                </div>
-                <div class="card" onclick="startQuiz('Economics')">
-                    <h3>Economics</h3>
-                    <p>Micro & Macro Economics</p>
-                </div>
-                <div class="card" onclick="startQuiz('Aptitude')">
-                    <h3>Aptitude</h3>
-                    <p>Logic & Reasoning</p>
-                   
-                </div>
-            </div>
-        </div>
+    <div class="subject-card">
+        <div class="icon">Geo</div>
+        <h3>Geography</h3>
+        <p>Map & Population</p>
+        <button onclick="startQuiz('geography')">Start Practice</button>
     </div>
-    <div class="card" onclick="startQuiz('Math')">
-    <h3>Mathematics</h3>
-    <p>Algebra & Geometry</p>
+
+    <div class="subject-card">
+        <div class="icon">Hist</div>
+        <h3>History</h3>
+        <p>Ethiopian History</p>
+        <button onclick="startQuiz('history')">Start Practice</button>
+    </div>
+
+    <div class="subject-card">
+        <div class="icon">IQ</div>
+        <h3>Aptitude</h3>
+        <p>Logic & Numbers</p>
+        <button onclick="startQuiz('aptitude')">Start Practice</button>
+    </div>
+
 </div>
-
     <script src="script.js"></script>
 </body>
 </html>
