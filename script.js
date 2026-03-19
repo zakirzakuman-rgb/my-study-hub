@@ -28,8 +28,7 @@ const allQuestions = [
 
     // Aptitude
     { cat: "Aptitude", q: "Complete the series: 5, 10, 20, 40, ...?", options: ["50", "60", "80", "100"], a: "80" },
-    { cat: "Aptitude", q: "WATER is to ICE as STEAM is to: ?", options: ["Fire", "Gas", "Water", "Cloud"], a: "Water" },
-    { cat: "english", q: "The man _______ the Bajaj last Saturday.", options: ["repaired", "repairing", "repairs", "repaireds"],  a: "repaired"
+    { cat: "Aptitude", q: "WATER is to ICE as STEAM is to: ?", options: ["Fire", "Gas", "Water", "Cloud"], a: "Water" }
 ];
 
 let currentQuestions = [];
