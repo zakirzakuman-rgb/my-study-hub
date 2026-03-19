@@ -164,6 +164,7 @@ function showResult() {
         <button onclick="window.open('https://t.me/share/url?text=${encodeURIComponent(msg)}')">Share Score</button>
     `;
 }
+
 function cancelQuiz() {
     if (confirm("Are you sure you want to quit?")) {
         clearInterval(timer); 
