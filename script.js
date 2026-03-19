@@ -12,7 +12,7 @@ const allQuestions = [
 let currentQuestions = [];
 let currentIdx = 0;
 let score = 0;
-let timeLeft = 15;
+let timeLeft = 30;
 let timer;
 
 function startQuiz(category) {
