@@ -334,17 +334,21 @@ function cancelQuiz() {
         document.getElementById("quiz-box").style.display = "none"; 
         document.getElementById("subject-selection").style.display = "flex"; 
     }
-}
-function startQuiz() {
-    let name = document.getElementById('username').value;
+function startApp() {
+    const nameInput = document.getElementById('userNameInput').value;
     
-    if (name === "") {
-        alert("enter your namee!");
+    if (nameInput.trim() === "") {
+        alert("እባክህ መጀመሪያ ስምህን አስገባ!");
     } else {
-        document.getElementById('login-container').style.display = 'none';
-        document.getElementById('quiz-container').style.display = 'block';
+        // ስሙን በኮምፒውተሩ ላይ ለጊዜው እናስቀምጠዋለን (በኋላ ውጤት ላይ ለመጠቀም)
+        localStorage.setItem('currentUser', nameInput);
         
-        // ከፈለግክ የተማሪውን ስም በዌብሳይቱ ላይ "እንኳን ደህና መጣህ ዘኪር" ብለህ ማሳየት ትችላለህ
-        console.log("ተማሪው: " + name);
+        // ሎጊን ገጹን በዝግታ ደብቀው
+        const overlay = document.getElementById('login-overlay');
+        overlay.style.opacity = '0';
+        
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 500); // ከግማሽ ሰከንድ በኋላ ሙሉ ለሙሉ ይጠፋል
     }
 }
