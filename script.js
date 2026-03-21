@@ -1,3 +1,27 @@
+function startApp() {
+    // 1. የጽሁፍ ሳጥኑን እና መላውን የሎጊን ገጽ በ ID እናገኛለን
+    const inputField = document.getElementById('userNameInput');
+    const overlay = document.getElementById('login-overlay');
+
+    // 2. የተጻፈውን ስም እናነባለን
+    const name = inputField.value;
+
+    // 3. ስሙ ባዶ ካልሆነ ገጹን እናጠፋለን
+    if (name.trim() !== "") {
+        // ስሙን ለበኋላ ውጤት ማሳያ እናስቀምጣለን
+        localStorage.setItem('currentUser', name);
+        
+        // ገጹን ወዲያው ደብቅ
+        overlay.style.display = 'none';
+        
+        // ለሙከራ ቆንጆ ሰላምታ እንዲሰጥህ
+        console.log("Welcome to Zakir's Study Hub, " + name + "!");
+    } else {
+        alert("እባክህ መጀመሪያ ስምህን አስገባ!");
+    }
+}
+
+
 const allQuestions = [
     // Geography
     { cat: "Geography", q: "Which is the highest mountain in Ethiopia?", options: ["Batu", "Ras Dashen", "Guge", "Chilalo"], a: "Ras Dashen" },
@@ -334,25 +358,3 @@ function cancelQuiz() {
         document.getElementById("quiz-box").style.display = "none"; 
         document.getElementById("subject-selection").style.display = "flex"; 
     }
-function startApp() {
-    // 1. የጽሁፍ ሳጥኑን እና መላውን የሎጊን ገጽ በ ID እናገኛለን
-    const inputField = document.getElementById('userNameInput');
-    const overlay = document.getElementById('login-overlay');
-
-    // 2. የተጻፈውን ስም እናነባለን
-    const name = inputField.value;
-
-    // 3. ስሙ ባዶ ካልሆነ ገጹን እናጠፋለን
-    if (name.trim() !== "") {
-        // ስሙን ለበኋላ ውጤት ማሳያ እናስቀምጣለን
-        localStorage.setItem('currentUser', name);
-        
-        // ገጹን ወዲያው ደብቅ
-        overlay.style.display = 'none';
-        
-        // ለሙከራ ቆንጆ ሰላምታ እንዲሰጥህ
-        console.log("Welcome to Zakir's Study Hub, " + name + "!");
-    } else {
-        alert("እባክህ መጀመሪያ ስምህን አስገባ!");
-    }
-}
