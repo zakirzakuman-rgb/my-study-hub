@@ -105,7 +105,7 @@ const allQuestions = [
     { cat: "History", q: "Which document declared the independence of the 13 American colonies?", options: ["Bill of Rights", "Declaration of Independence", "Magna Carta", "Constitution"], a: "Declaration of Independence" },
     { cat: "History", q: "The 'Bolsheviks' were led by:", options: ["Trotsky", "Lenin", "Stalin", "Nicholas II"], a: "Lenin" },
     { cat: "History", q: "Aptitude: If King Ezana ruled in the 4th century, which years does that include?", options: ["400-499", "300-399", "500-599", "1400-1499"], a: "300-399" },
-    { cat: "History", q: "Aptitude: Identify the odd one out from the fascist leaders:", options: ["Hitler", "Mussolini", "Churchill", "Hirohito"], a: "Churchill" },
+    { cat: "History", q: "Aptitude: Identify the odd one out from the fascist leaders:", options: ["Hitler", "Mussolini", "Churchill", "Hirohito"], a: "Churchill" }
  
     // Aptitude
     { cat: "Aptitude", q: "Complete the series: 5, 10, 20, 40, ...?", options: ["50", "60", "80", "100"], a: "80" },
@@ -129,7 +129,7 @@ const allQuestions = [
     { cat: "Aptitude", q: "Which of the following is the largest fraction?", options: ["1/2", "3/4", "5/8", "2/3"], a: "3/4" },
     { cat: "Aptitude", q: "The average of three numbers is 10. If two of the numbers are 8 and 12, what is the third number?", options: ["8", "10", "12", "14"], a: "10" },
     { cat: "Aptitude", q: "Identify the next shape in the logic: Triangle, Square, Pentagon, ___?", options: ["Circle", "Hexagon", "Octagon", "Line"], a: "Hexagon" },
-    { cat: "Aptitude", q: "If a book has 200 pages and you read 20% of it, how many pages are left?", options: ["40", "160", "180", "150"], a: "160" },
+    { cat: "Aptitude", q: "If a book has 200 pages and you read 20% of it, how many pages are left?", options: ["40", "160", "180", "150"], a: "160" }
 
     // English
     { cat: "English", q: "I _______ my homework before my father arrived last night.", options: ["finish", "have finished", "had finished", "finishing"], a: "had finished" },
@@ -171,7 +171,7 @@ const allQuestions = [
     { cat: "English", q: "What is the antonym (opposite) of 'Ancient'?", options: ["Old", "Modern", "Historic", "Antique"], a: "Modern" },
     { cat: "English", q: "I am not used to _______ up early in the morning.", options: ["get", "getting", "got", "gets"], a: "getting" },
     { cat: "English", q: "They _______ each other since they were children.", options: ["know", "have known", "are knowing", "knew"], a: "have known" },
-    { cat: "English", q: "The cake was cut _______ a sharp knife.", options: ["by", "with", "in", "from"], a: "with" },
+    { cat: "English", q: "The cake was cut _______ a sharp knife.", options: ["by", "with", "in", "from"], a: "with" }
 
     // Mathematics
     { cat: "Mathematics", q: "What is the 10th term of the sequence: 2, 5, 8, 11...?", options: ["29", "30", "32", "27"], a: "29" },
@@ -193,7 +193,7 @@ const allQuestions = [
     { cat: "Mathematics", q: "What is the formula for the area of a circle?", options: ["2πr", "πr²", "bh/2", "lw"], a: "πr²" },
     { cat: "Mathematics", q: "The number of subsets of a set with 3 elements is:", options: ["3", "6", "8", "9"], a: "8" },
     { cat: "Mathematics", q: "Which quadrant has both x and y negative?", options: ["I", "II", "III", "IV"], a: "III" },
-    { cat: "Mathematics", q: "What is 2 to the power of 5?", options: ["10", "25", "32", "64"], a: "32" },
+    { cat: "Mathematics", q: "What is 2 to the power of 5?", options: ["10", "25", "32", "64"], a: "32" }
 
     // Economics
     { cat: "Economics", q: "The basic economic problem facing all societies is:", options: ["Inflation", "Scarcity", "Unemployment", "Poverty"], a: "Scarcity" },
