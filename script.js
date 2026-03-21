@@ -335,20 +335,24 @@ function cancelQuiz() {
         document.getElementById("subject-selection").style.display = "flex"; 
     }
 function startApp() {
-    const nameInput = document.getElementById('userNameInput').value;
-    
-    if (nameInput.trim() === "") {
-        alert("እባክህ መጀመሪያ ስምህን አስገባ!");
+    // 1. የጽሁፍ ሳጥኑን እና መላውን የሎጊን ገጽ በ ID እናገኛለን
+    const inputField = document.getElementById('userNameInput');
+    const overlay = document.getElementById('login-overlay');
+
+    // 2. የተጻፈውን ስም እናነባለን
+    const name = inputField.value;
+
+    // 3. ስሙ ባዶ ካልሆነ ገጹን እናጠፋለን
+    if (name.trim() !== "") {
+        // ስሙን ለበኋላ ውጤት ማሳያ እናስቀምጣለን
+        localStorage.setItem('currentUser', name);
+        
+        // ገጹን ወዲያው ደብቅ
+        overlay.style.display = 'none';
+        
+        // ለሙከራ ቆንጆ ሰላምታ እንዲሰጥህ
+        console.log("Welcome to Zakir's Study Hub, " + name + "!");
     } else {
-        // ስሙን በኮምፒውተሩ ላይ ለጊዜው እናስቀምጠዋለን (በኋላ ውጤት ላይ ለመጠቀም)
-        localStorage.setItem('currentUser', nameInput);
-        
-        // ሎጊን ገጹን በዝግታ ደብቀው
-        const overlay = document.getElementById('login-overlay');
-        overlay.style.opacity = '0';
-        
-        setTimeout(() => {
-            overlay.style.display = 'none';
-        }, 500); // ከግማሽ ሰከንድ በኋላ ሙሉ ለሙሉ ይጠፋል
+        alert("እባክህ መጀመሪያ ስምህን አስገባ!");
     }
 }
