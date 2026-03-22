@@ -11,6 +11,26 @@
     <meta name="google-site-verification" content="MwjMR9FcEPS2BiS-YdYJab5YHVa0MKoBzRsRplKT9M0" />
 </head>
 <body>
+    <div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0066cc; display: flex; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s;">
+    <div style="text-align: center; color: white; font-family: sans-serif;">
+        <h1 style="font-size: 3rem; margin-bottom: 10px;">Zakir's Study Hub</h1>
+        <p style="font-size: 1.2rem; margin-bottom: 25px;">እንኳን ደህና መጡ! ስምዎን ያስገቡ።</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+            <input type="text" id="userNameInput" placeholder="ስምዎን እዚህ ይጻፉ..." 
+                   style="padding: 12px 20px; border-radius: 25px; border: none; width: 250px; outline: none; font-size: 16px; color: #333;">
+            
+            <button onclick="let name = document.getElementById('userNameInput').value; 
+                             if(name.trim() !== ''){ 
+                                localStorage.setItem('currentUser', name); 
+                                document.getElementById('login-overlay').style.display='none'; 
+                             } else { alert('እባክዎን ስምዎን ያስገቡ!'); }" 
+                    style="padding: 12px 30px; border-radius: 25px; cursor: pointer; background: #5dade2; color: white; border: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
+                Start
+            </button>
+        </div>
+    </div>
+</div>
 
     <div id="main-container">
         <h1>Zakir's Study Hub</h1>
