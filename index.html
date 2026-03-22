@@ -11,109 +11,57 @@
     <meta name="google-site-verification" content="MwjMR9FcEPS2BiS-YdYJab5YHVa0MKoBzRsRplKT9M0" />
 </head>
 <body>
-    <div id="login-overlay" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #5DADE2; display: flex; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s;">
-    <div style="text-align: center; color: white; font-family: sans-serif;">
-        <h1 style="font-size: 3rem; margin-bottom: 10px;" Study Hub</h1>
-        <p style="font-size: 1.2rem; margin-bottom: 25px;">WELL COME TO THIS SITE!</p>
-
-            <div class="container">
-    <h2>እንኳን ደህና መጡ!</h2>
-    <p>እባክዎ ስምዎን ያስገቡ እና የትምህርት ዘርፍዎን ይምረጡ፡</p>
-
-    <input type="text" id="userName" placeholder="ስምዎን እዚህ ይጻፉ..." required>
-
-    <select id="streamChoice">
-        <option value="">--ዘርፍ ይምረጡ--</option>
-        <option value="natural">Natural Science</option>
-        <option value="social">Social Science</option>
-    </select>
-
-    <button onclick="startLesson()">ቀጥል</button>
-</div>
-        
-        <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-            <input type="text" id="userNameInput" placeholder="Enter your name..." 
-                   style="padding: 12px 20px; border-radius: 25px; border: none; width: 250px; outline: none; font-size: 16px; color: #333;">
-            
-            <button onclick="let name = document.getElementById('userNameInput').value; 
-                             if(name.trim() !== ''){ 
-                                localStorage.setItem('currentUser', name); 
-                                document.getElementById('login-overlay').style.display='none'; 
-                             } else { alert('እባክዎን ስምዎን ያስገቡ!'); }" 
-                    style="padding: 12px 30px; border-radius: 25px; cursor: pointer; background: #5dade2; color: white; border: none; font-weight: bold; font-size: 16px; box-shadow: 0 4px 10px rgba(0,0,0,0.3);">
-                Start
-            </button>
-        </div>
+    <div id="login-overlay">
+    <div class="login-box">
+        <h2>Study Hub</h2>
+        <p>WELCOME TO THIS SITE!</p>
+        <input type="text" id="userNameInput" placeholder="Enter your name..." required>
+        <select id="streamChoice">
+            <option value="">-- Select Stream --</option>
+            <option value="natural">Natural Science</option>
+            <option value="social">Social Science</option>
+        </select>
+        <button class="start-btn" onclick="startApp()">Start</button>
     </div>
 </div>
 
-
+<div id="main-content" style="display:none;">
+    <h1 id="main-title">s Study Hub</h1>
+    
     <div class="tabs">
-  <button class="tab-btn active" onclick="showStream('social')">Social Science</button>
-  <button class="tab-btn" onclick="showStream('natural')">Natural Science</button>
-</div>
+        <button id="social-tab" class="tab-btn" onclick="switchStream('social')">Social Science</button>
+        <button id="natural-tab" class="tab-btn" onclick="switchStream('natural')">Natural Science</button>
+    </div>
 
-<div id="social-content" class="stream-content">
-  <h3>Social Science Questions</h3>
-  </div>
-
-<div id="natural-content" class="stream-content" style="display:none;">
-  <h3>Natural Science Questions</h3>
-  </div>
-
-    <div id="main-container">
-        <h1>s Study Hub</h1>
-        
-        <div id="subject-selection" class="subject-container">
-            <div class="subject-card">
-                <div class="icon">Geo</div>
-                <h3>Geography</h3>
-                <p>Map & Population</p>
-                <button onclick="startQuiz('Geography')">Start Quiz</button>
-            </div>
-
-            <div class="subject-card">
-                <div class="icon">Hist</div>
-                <h3>History</h3>
-                <p>World & Ethiopia</p>
-                <button onclick="startQuiz('History')">Start Quiz</button>
-            </div>
-
-            <div class="subject-card">
-                <div class="icon">IQ</div>
-                <h3>Aptitude</h3>
-                <p>Logic & Math</p>
-                <button onclick="startQuiz('Aptitude')">Start Quiz</button>
-            </div>
-        
-            <div class="subject-card">
-                <div class="icon">Eng</div>
-                <h3>English</h3>
-                <p>Grammar</p>
-                <button onclick="startQuiz('English')">Start Quiz</button>
-            </div>
-
-            <div class="subject-card">
-                <div class="icon">Math</div>
-                <h3>Mathematics</h3>
-                <p>Social Science</p>
-                <button onclick="startQuiz('Mathematics')">Start Quiz</button>
-            </div>
-
-            <div class="subject-card">
-                <div class="icon">Eco</div>
-                <h3>Economics</h3>
-                <p>Micro & Macro</p>
-                <button onclick="startQuiz('Economics')">Start Quiz</button>
-            </div>
+    <div id="social-subjects" class="subject-container">
+        <div class="subject-card">
+            <div class="icon">Geo</div>
+            <h3>Geography</h3>
+            <p>Map & Population</p>
+            <button class="quiz-btn" onclick="startQuiz('Geography')">Start Quiz</button>
+        </div>
+        <div class="subject-card">
+            <div class="icon">Hist</div>
+            <h3>History</h3>
+            <p>World & Ethiopia</p>
+            <button class="quiz-btn" onclick="startQuiz('History')">Start Quiz</button>
+        </div>
         </div>
 
-       <div id="quiz-box" style="display: none;">
-    <div id="timer">Time Left: 30s</div>
-    <h2 id="question-text">Question goes here</h2>
-    <div id="btns-container"></div>
-    
-    <button onclick="cancelQuiz()" style="background-color: red; color: white; margin-top: 10px; cursor: pointer;">Cancel Quiz</button>
+    <div id="natural-subjects" class="subject-container" style="display:none;">
+        <div class="subject-card">
+            <div class="icon">Bio</div>
+            <h3>Biology</h3>
+            <p>Genetics & Ecology</p>
+            <button class="quiz-btn" onclick="startQuiz('Biology')">Start Quiz</button>
+        </div>
+        <div class="subject-card">
+            <div class="icon">Phy</div>
+            <h3>Physics</h3>
+            <p>Mechanics & Optics</p>
+            <button class="quiz-btn" onclick="startQuiz('Physics')">Start Quiz</button>
+        </div>
+        </div>
 </div>
 
     <script src="script.js"></script>
