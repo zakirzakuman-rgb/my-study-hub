@@ -335,20 +335,18 @@ function cancelQuiz() {
         document.getElementById("subject-selection").style.display = "flex"; 
     }
 }
-function goToStream() {
+function startLesson() {
     let name = document.getElementById("userName").value;
     let stream = document.getElementById("streamChoice").value;
 
     if (name === "" || stream === "") {
-        alert("Please enter your name and select a stream!");
+        alert("እባክዎ ስምዎን እና ዘርፍዎን በትክክል ያስገቡ!");
         return;
     }
 
-    localStorage.setItem("visitorName", name);
+    // ለሙከራ ያህል ሰላምታ እንዲሰጠው ማድረግ
+    alert("ሰላም " + name + "! ወደ " + stream + " ክፍል እየገባህ ነው...");
 
-    if (stream === "natural") {
-        window.location.href = "natural_page.html"; 
-    } else {
-        window.location.href = "social_page.html";
-    }
+    // ወደ ሚቀጥለው ገጽ ለመውሰድ (ለምሳሌ natural.html ወይም social.html)
+    window.location.href = stream + ".html";
 }
