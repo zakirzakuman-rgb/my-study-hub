@@ -50,6 +50,7 @@ body {
 
 /* Quiz Box Styling */
 #quiz-box {
+    color:#998712;
     background: white;
     padding: 40px;
     border-radius: 20px;
