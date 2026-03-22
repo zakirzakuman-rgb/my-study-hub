@@ -335,11 +335,20 @@ function cancelQuiz() {
         document.getElementById("subject-selection").style.display = "flex"; 
     }
 }
-function showStream(streamName) {
-  // ሁለቱንም መጀመሪያ ደብቃቸው
-  document.getElementById('social-content').style.display = 'none';
-  document.getElementById('natural-content').style.display = 'none';
-  
-  // የተመረጠውን ብቻ አሳይ
-  document.getElementById(streamName + '-content').style.display = 'block';
+function goToStream() {
+    let name = document.getElementById("userName").value;
+    let stream = document.getElementById("streamChoice").value;
+
+    if (name === "" || stream === "") {
+        alert("Please enter your name and select a stream!");
+        return;
+    }
+
+    localStorage.setItem("visitorName", name);
+
+    if (stream === "natural") {
+        window.location.href = "natural_page.html"; 
+    } else {
+        window.location.href = "social_page.html";
+    }
 }
