@@ -153,14 +153,35 @@ function checkAnswer(selected, correct) {
     }, 2500); // 2.5 seconds to hear the voice
 }
 
+
+// 1. ወደ መጀመሪያው የካርድ ምርጫ የሚመልስ (ገጹን ሳያድስ)
+function goHome() {
+    // የኩዊዝ ሳጥኑን ደብቅ
+    const quizBox = document.getElementById('quiz-box');
+    if (quizBox) quizBox.style.display = 'none';
+
+    // የትምህርት ካርዶቹን እና ታቦቹን መልሰህ አሳይ
+    const stream = document.getElementById('streamChoice').value;
+    switchStream(stream); // የትኛው ስትሪም እንደነበረ አይቶ ያሳያል
+    document.querySelector('.tabs').style.display = 'flex';
+    
+    // ውጤት ካለ እንዲጠፋ
+    currentQuestionIndex = 0;
+    score = 0;
+}
+
 function showFinalResult() {
     let quizBox = document.getElementById('quiz-box');
     let percent = (score / quizQuestions.length) * 100;
-    let msg = percent >= 85 ? "Excellent, Zakir! Future Engineer! 🏆" : "Good job! Keep studying! 💪";
-    
+    let message = percent >= 85 ? "Excellent job, Zakir! 🏆" : "Good effort! Keep practicing. 💪";
+
     quizBox.innerHTML = `
-        <h1>Score: ${score} / ${quizQuestions.length}</h1>
-        <p>${msg}</p>
-        <button onclick="goHome()" style="padding:15px; cursor:pointer;">Restart</button>
+        <h2 style="color: #007bff;">QUIZ COMPLETED</h2>
+        <div style="font-size: 60px; font-weight: bold; margin: 20px 0;">${score} / ${quizQuestions.length}</div>
+        <p style="font-size: 1.2rem; margin-bottom: 20px;">${message}</p>
+        
+        <button onclick="goHome()" style="padding: 15px 30px; background: #28a745; color: white; border: none; border-radius: 10px; cursor: pointer; font-weight: bold;">
+            SELECT ANOTHER SUBJECT
+        </button>
     `;
 }
