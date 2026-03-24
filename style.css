@@ -154,12 +154,23 @@ body.dark-theme .subject-card {
     background: #252525;
     color: white;
 }
+/* ርዕሱ (Zakir's Hub) ገጹ እንደተከፈተ ከላይ እንዲሆን */
 #main-title {
-    font-size: 22px; 
-    color: #636e72; 
+    margin-top: 20px;
+    margin-bottom: 50px; /* ከጥያቄው ጋር እንዳይጋፋ ሰፊ ክፍተት */
     text-align: center;
-    margin-top: 10px;
-    margin-bottom: 30px; 
-    text-transform: uppercase;
-    letter-spacing: 2px;
+}
+
+
+.nav-controls, #dark-mode-toggle {
+    position: absolute; /* ከጥያቄው ቦክስ ነፃ እንዲሆኑ */
+    top: 20px;
+}
+
+#dark-mode-toggle {
+    right: 20px; /* በቀኝ በኩል */
+}
+
+.nav-controls {
+    left: 20px; /* በግራ በኩል */
 }
