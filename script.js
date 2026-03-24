@@ -463,18 +463,26 @@ function speak(text) {
     window.speechSynthesis.speak(msg);
 }
 
-// HOME & SHARE FUNCTIONS
 function goHome() {
-    location.reload();
-}
-
-function shareSite() {
-    const url = window.location.href;
-    if (navigator.share) {
-        navigator.share({ title: 'Zakir Prep Hub', url: url });
-    } else {
-        alert("Copy this link to share: " + url);
+    // 1. የጥያቄ መስሪያ ቦታውን (Quiz Area) ደብቅ
+    const quizArea = document.getElementById('quiz-area-wrapper');
+    if (quizArea) {
+        quizArea.style.display = 'none';
     }
+
+    // 2. ሰብጀክቶቹን (Home Page/Main Content) መልሰህ አሳይ
+    const mainContent = document.getElementById('main-content');
+    if (mainContent) {
+        mainContent.style.display = 'block';
+    }
+
+    // 3. እየሄደ ያለ ታይመር (Timer) ካለ እንዲቆም አድርግ
+    if (typeof timerInterval !== 'undefined') {
+        clearInterval(timerInterval);
+    }
+    
+    // 4. ገጹን ወደ ላይኛው ክፍል (Top) እንዲመለስ አድርግ
+    window.scrollTo(0, 0);
 }
 
 // START APP
@@ -500,6 +508,18 @@ function startQuiz(subject) {
     score = 0;
     document.querySelector('.subject-container:not([style*="display: none"])').style.display = 'none';
     document.querySelector('.tabs').style.display = 'none';
+    showQuestion();
+}
+function startQuiz(category) {
+    // 1. መጀመሪያ ከዝርዝሩ ውስጥ የዚያን ሰብጀክት ጥያቄዎች ብቻ ለይተህ አውጣ
+    let filteredQuestions = allQuestions.filter(q => q.cat === category);
+
+    // 2. ጥያቄዎቹን በዘፈቀደ እንዲዘበራረቁ አድርግ (ይህ ነው ዋናው ሚስጥር!)
+    filteredQuestions.sort(() => Math.random() - 0.5);
+
+    // 3. አሁን የተዘበራረቁትን ጥያቄዎች ለተማሪው ማሳየት ትችላለህ
+    currentQuestions = filteredQuestions; 
+    currentQuestionIndex = 0;
     showQuestion();
 }
 
@@ -529,6 +549,13 @@ function showQuestion() {
     });
     startTimer();
 }
+// በ showQuestion ውስጥ ምርጫዎቹን ከመፍጠርህ በፊት
+let shuffledOptions = [...currentQuestion.options].sort(() => Math.random() - 0.5);
+
+// አሁን በ shuffledOptions ተጠቅመህ በተኖቹን ፍጠር
+shuffledOptions.forEach(option => {
+    // በተኖቹን የመፍጠር ኮድ እዚህ ይገባል...
+});
 
 function startTimer() {
     timer = setInterval(() => {
