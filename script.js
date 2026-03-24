@@ -437,7 +437,7 @@ const allQuestions = [
 { cat: "Chemistry", q: "Functional group of Carboxylic acids is:", options: ["-CHO", "-CO-", "-COOH", "-OH"], a: "-COOH" }
 ];
 
-// 1. ጥያቄዎቹን የሚዘበራርቅ ፈንክሽን (Fisher-Yates Shuffle)
+// 1. ጥያቄዎቹን የሚዘበራርቅ ፈንክሽን
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -446,32 +446,31 @@ function shuffleArray(array) {
     return array;
 }
 
-// 2. ተለዋዋጭ (Variables)
+// 2. ተለዋዋጮች
 let quizQuestions = [];
 let currentQuestionIndex = 0;
 let score = 0;
 let timer;
 let timeLeft = 30;
 
-// VOICE ASSISTANT (መልሱን እንዲናገር)
+// VOICE ASSISTANT
 function speak(text) {
-    window.speechSynthesis.cancel(); // ያለፈውን ድምጽ ለማቆም
+    window.speechSynthesis.cancel();
     const msg = new SpeechSynthesisUtterance();
     msg.text = text;
     window.speechSynthesis.speak(msg);
 }
 
-// HOME BUTTON (ወደ መጀመሪያው ገጽ ለመመለስ)
+// HOME BUTTON
 function goHome() {
-    clearInterval(timer); // ታይመሩ እንዲቆም
+    clearInterval(timer);
     
-    // የጥያቄ መስሪያ ቦታውን (Quiz Box) ደብቅ
-    const quizBox = document.getElementById('quiz-box');
-    if (quizBox) quizBox.style.display = 'none';
+    // ጥያቄው ያለበትን ሙሉ ቦታ ደብቅ
+    const quizWrapper = document.getElementById('quiz-area-wrapper');
+    if (quizWrapper) quizWrapper.style.display = 'none';
 
     // ዋናውን ገጽ አሳይ
     document.getElementById('main-content').style.display = 'block';
-    document.querySelector('.tabs').style.display = 'block';
     
     // ሰብጀክቶቹ በትክክል እንዲታዩ
     let stream = document.getElementById('streamChoice').value || 'social';
@@ -480,12 +479,18 @@ function goHome() {
     window.scrollTo(0, 0);
 }
 
-// START APP (ከ Login በኋላ)
+// START APP
 function startApp() {
-    let name = document.getElementById('userNameInput').value;
-    let stream = document.getElementById('streamChoice').value;
-    if (!name || !stream) return alert("እባክህ ስምህንና ዘርፍህን ምረጥ!");
+    let nameInput = document.getElementById('userNameInput');
+    let streamInput = document.getElementById('streamChoice');
+
+    if (!nameInput.value || !streamInput.value) {
+        return alert("እባክህ ስምህንና ዘርፍህን ምረጥ!");
+    }
     
+    let name = nameInput.value;
+    let stream = streamInput.value;
+
     document.getElementById('login-overlay').style.display = 'none';
     document.getElementById('main-content').style.display = 'block';
     document.getElementById('main-title').innerText = name + "'s Hub";
@@ -497,21 +502,28 @@ function switchStream(stream) {
     document.getElementById('natural-subjects').style.display = (stream === 'natural' ? 'flex' : 'none');
 }
 
-// QUIZ የመጀመርያ ፈንክሽን
+// START QUIZ
 function startQuiz(subject) {
-    // 1. የዚያን ሰብጀክት ጥያቄዎች ለይ
+    // 1. ጥያቄዎቹን ፈልግ (allQuestions የግድ መኖር አለበት)
+    if (typeof allQuestions === 'undefined') {
+        alert("ጥያቄዎቹ አልተጫኑም! እባክህ allQuestions ዝርዝር መኖሩን አረጋግጥ።");
+        return;
+    }
+
     let filtered = allQuestions.filter(q => q.cat === subject);
     
-    // 2. ጥያቄዎቹን ዘበራርቅ
+    if (filtered.length === 0) {
+        alert(subject + " በሚለው ሰብጀክት ጥያቄ አልተገኘም!");
+        return;
+    }
+
     quizQuestions = shuffleArray([...filtered]);
-    
     currentQuestionIndex = 0;
     score = 0;
 
-    // 3. የድሮ ገጾችን ደብቅ
-    document.getElementById('social-subjects').style.display = 'none';
-    document.getElementById('natural-subjects').style.display = 'none';
-    document.querySelector('.tabs').style.display = 'none';
+    // 2. ገጾችን ደብቅ
+    document.getElementById('main-content').style.display = 'none';
+    document.getElementById('quiz-area-wrapper').style.display = 'block';
 
     showQuestion();
 }
@@ -521,29 +533,21 @@ function showQuestion() {
     timeLeft = 30;
     let q = quizQuestions[currentQuestionIndex];
     
+    // HTML ላይ ያለው 'quiz-box' ውስጥ ነው የምንጽፈው
     let quizBox = document.getElementById('quiz-box');
-    if (!quizBox) {
-        quizBox = document.createElement('div');
-        quizBox.id = 'quiz-box';
-        document.body.appendChild(quizBox);
-    }
-    quizBox.className = "quiz-container"; // CSS ውስጥ ካለው ስም ጋር እንዲመሳሰል
-    quizBox.style.display = 'block';
-    
-    // ምርጫዎቹን (Choices) መዘበራረቅ
     let shuffledOptions = shuffleArray([...q.options]);
 
     quizBox.innerHTML = `
-        <div id="timer-display" style="font-size:24px; color:red; font-weight:bold; text-align:center;">Time: 30s</div>
-        <h2 style="text-align:center;">${q.cat}</h2>
-        <p style="font-size:1.4rem; font-weight:bold; margin-bottom:20px;">${currentQuestionIndex + 1}. ${q.q}</p>
+        <div id="timer-display" style="font-size:24px; color:red; font-weight:bold; text-align:center; margin-bottom:10px;">Time: 30s</div>
+        <h2 style="text-align:center; color:#007bff;">${q.cat}</h2>
+        <p style="font-size:1.3rem; font-weight:bold; margin:20px 0;">${currentQuestionIndex + 1}. ${q.q}</p>
         <div id="options-container"></div>
     `;
 
     shuffledOptions.forEach(opt => {
         let btn = document.createElement('button');
         btn.innerText = opt;
-        btn.className = "quiz-answer-btn"; // ትላልቅ እንዲሆኑ CSS ላይ የሰጠኸው ስም
+        btn.className = "quiz-answer-btn";
         btn.onclick = () => checkAnswer(opt, q.a);
         document.getElementById('options-container').appendChild(btn);
     });
@@ -598,12 +602,12 @@ function checkAnswer(selected, correct) {
 function showFinalResult() {
     let quizBox = document.getElementById('quiz-box');
     let percent = Math.round((score / quizQuestions.length) * 100);
-    let message = percent >= 85 ? "Excellent job, Zakir! 🏆" : "Good effort! Keep practicing. 💪";
+    let message = percent >= 80 ? "Excellent job, Zakir! 🏆" : "Good effort! Keep practicing. 💪";
 
     quizBox.innerHTML = `
         <h2 style="color: #007bff; text-align:center;">QUIZ COMPLETED</h2>
-        <div style="font-size: 50px; font-weight: bold; text-align:center; margin: 20px 0;">${score} / ${quizQuestions.length} (${percent}%)</div>
-        <p style="font-size: 1.3rem; text-align:center; margin-bottom: 25px;">${message}</p>
+        <div style="font-size: 50px; font-weight: bold; text-align:center; margin: 20px 0;">${score} / ${quizQuestions.length}</div>
+        <p style="font-size: 1.3rem; text-align:center; margin-bottom: 25px;">${message} (${percent}%)</p>
         <button onclick="goHome()" style="width:100%; padding: 18px; background: #28a745; color: white; border: none; border-radius: 12px; cursor: pointer; font-size:18px; font-weight: bold;">
             FINISH & GO HOME
         </button>
@@ -617,10 +621,10 @@ function showFinalResult() {
 // --- DARK MODE ---
 function initDarkMode() {
     const darkModeToggle = document.getElementById('dark-mode-toggle');
-    const modeIcon = document.getElementById('mode-icon');
     if (darkModeToggle) {
         darkModeToggle.onclick = function() {
             document.body.classList.toggle('dark-theme');
+            const modeIcon = document.getElementById('mode-icon');
             if(modeIcon) modeIcon.textContent = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
         };
     }
@@ -639,6 +643,5 @@ function saveScore(name, subject, scorePercent) {
 window.addEventListener('DOMContentLoaded', () => {
     initDarkMode();
 });
-
 
 
