@@ -631,19 +631,9 @@ darkModeToggle.addEventListener('click', () => {
         darkModeToggle.childNodes[1].nodeValue = ' Dark Mode';
     }
 });
-// 1. ውጤትን መመዝገብ (ይህንን በ showFinalResult() ውስጥ ጥራው)
+// 1. ውጤትን ለመመዝገብ የሚጠቅም ፋንክሽን
 function saveScore(name, subject, scorePercent) {
     let leaderboard = JSON.parse(localStorage.getItem('studyHubLeaderboard')) || [];
-    function showFinalResult() {
-    let name = document.getElementById('userNameInput').value; // የተማሪው ስም
-    let subject = quizQuestions[0].cat; // የትምህርቱ አይነት
-    let percent = Math.round((score / quizQuestions.length) * 100);
-    
-    // ውጤቱን መዝግብ
-    saveScore(name, subject, percent);
-    
-    // የተቀረው የውጤት ማሳያ ኮድህ እዚህ ይቀጥላል...
-}
     
     // አዲስ ውጤት ጨምር
     leaderboard.push({ name: name, subject: subject, score: scorePercent });
@@ -658,12 +648,35 @@ function saveScore(name, subject, scorePercent) {
     displayLeaderboard();
 }
 
-// 2. በሰንጠረዥ ማሳየት
+// 2. ፈተና ሲያልቅ ውጤት የሚያሳይ ፋንክሽን
+function showFinalResult() {
+    let quizBox = document.getElementById('quiz-box'); // ይህ ID በ HTMLህ መኖሩን አረጋግጥ
+    let name = document.getElementById('userNameInput').value || "Student"; 
+    let subject = quizQuestions[0].cat; 
+    let percent = Math.round((score / quizQuestions.length) * 100);
+    
+    // ውጤቱን ወደ Leaderboard መዝግብ
+    saveScore(name, subject, percent);
+    
+    // ለተማሪው ውጤቱን በስክሪን ላይ አሳይ
+    quizBox.innerHTML = `
+        <div class="result-container" style="text-align: center; padding: 20px;">
+            <h2>Quiz Completed!</h2>
+            <p style="font-size: 24px;">Your Score: <strong>${score} / ${quizQuestions.length}</strong></p>
+            <p style="font-size: 20px;">Percentage: <strong>${percent}%</strong></p>
+            <button onclick="location.reload()" style="padding: 10px 20px; cursor: pointer; border-radius: 10px; background: #007bff; color: white; border: none;">Go Back Home</button>
+        </div>
+    `;
+}
+
+// 3. በሰንጠረዥ ማሳየት
 function displayLeaderboard() {
     const leaderboardBody = document.getElementById('leaderboard-body');
+    if (!leaderboardBody) return; // ሰንጠረዡ ከሌለ ኮዱ እንዳይበላሽ
+
     const leaderboard = JSON.parse(localStorage.getItem('studyHubLeaderboard')) || [];
     
-    leaderboardBody.innerHTML = ''; // የቆየውን አጽዳ
+    leaderboardBody.innerHTML = ''; 
     
     leaderboard.forEach((entry, index) => {
         const row = `
@@ -678,15 +691,16 @@ function displayLeaderboard() {
     });
 }
 
-// 3. ቦርዱን ለማጥፋት (ከተፈለገ)
+// ቦርዱን ለማጥፋት
 function clearLeaderboard() {
-    localStorage.removeItem('studyHubLeaderboard');
-    displayLeaderboard();
+    if(confirm("Are you sure you want to clear the leaderboard?")) {
+        localStorage.removeItem('studyHubLeaderboard');
+        displayLeaderboard();
+    }
 }
 
 // ድረ-ገጹ ሲከፈት ሊደርቦርዱን እንዲያሳይ
 window.onload = displayLeaderboard;
-
 
 
 
