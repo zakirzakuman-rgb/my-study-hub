@@ -616,21 +616,34 @@ q.options.forEach(opt => {
     btn.onclick = () => checkAnswer(opt, q.a);
     optionsDiv.appendChild(btn);
 });
-const darkModeToggle = document.getElementById('dark-mode-toggle');
-const modeIcon = document.getElementById('mode-icon');
+// Dark Mode ማብሪያ - ይህንን በ script.js መጨረሻ ላይ አድርገው
+function initDarkMode() {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const modeIcon = document.getElementById('mode-icon');
 
-darkModeToggle.addEventListener('click', () => {
-    document.body.classList.toggle('dark-theme');
-    
-    // በተኑ ላይ ያለውን ጽሁፍ እና አይኮን ለመቀየር
-    if (document.body.classList.contains('dark-theme')) {
-        modeIcon.textContent = '☀️';
-        darkModeToggle.childNodes[1].nodeValue = ' Light Mode';
-    } else {
-        modeIcon.textContent = '🌙';
-        darkModeToggle.childNodes[1].nodeValue = ' Dark Mode';
+    if (darkModeToggle) {
+        darkModeToggle.onclick = function() {
+            document.body.classList.toggle('dark-theme');
+            
+            // ምልክቱን ለመቀየር
+            if (document.body.classList.contains('dark-theme')) {
+                if(modeIcon) modeIcon.textContent = '☀️';
+            } else {
+                if(modeIcon) modeIcon.textContent = '🌙';
+            }
+        };
     }
-});
+}
+
+// ድረ-ገጹ ሲከፈት እንዲዘጋጅ
+window.addEventListener('DOMContentLoaded', initDarkMode);
+
+
+
+
+
+
+
 // 1. ውጤትን ለመመዝገብ የሚጠቅም ፋንክሽን
 function saveScore(name, subject, scorePercent) {
     let leaderboard = JSON.parse(localStorage.getItem('studyHubLeaderboard')) || [];
