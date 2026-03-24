@@ -616,7 +616,7 @@ q.options.forEach(opt => {
     btn.onclick = () => checkAnswer(opt, q.a);
     optionsDiv.appendChild(btn);
 });
-// Dark Mode ማብሪያ - ይህንን በ script.js መጨረሻ ላይ አድርገው
+// --- 1. DARK MODE ማብሪያ ---
 function initDarkMode() {
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     const modeIcon = document.getElementById('mode-icon');
@@ -625,7 +625,7 @@ function initDarkMode() {
         darkModeToggle.onclick = function() {
             document.body.classList.toggle('dark-theme');
             
-            // ምልክቱን ለመቀየር
+            // ምልክቱን ለመቀየር (ጨረቃ ወይም ፀሐይ)
             if (document.body.classList.contains('dark-theme')) {
                 if(modeIcon) modeIcon.textContent = '☀️';
             } else {
@@ -635,62 +635,22 @@ function initDarkMode() {
     }
 }
 
-// ድረ-ገጹ ሲከፈት እንዲዘጋጅ
-window.addEventListener('DOMContentLoaded', initDarkMode);
-
-
-
-
-
-
-
-// 1. ውጤትን ለመመዝገብ የሚጠቅም ፋንክሽን
+// --- 2. LEADERBOARD (ውጤት መመዝገቢያ) ---
 function saveScore(name, subject, scorePercent) {
     let leaderboard = JSON.parse(localStorage.getItem('studyHubLeaderboard')) || [];
-    
-    // አዲስ ውጤት ጨምር
     leaderboard.push({ name: name, subject: subject, score: scorePercent });
-    
-    // ውጤቶችን ከትልቅ ወደ ትንሽ አደራጅ (Sort)
-    leaderboard.sort((a, b) => b.score - a.score);
-    
-    // ምርጥ 5ቱን ብቻ አስቀር
-    leaderboard = leaderboard.slice(0, 5);
-    
+    leaderboard.sort((a, b) => b.score - a.score); // ከትልቅ ወደ ትንሽ
+    leaderboard = leaderboard.slice(0, 5); // ምርጥ 5 ብቻ
     localStorage.setItem('studyHubLeaderboard', JSON.stringify(leaderboard));
     displayLeaderboard();
 }
 
-// 2. ፈተና ሲያልቅ ውጤት የሚያሳይ ፋንክሽን
-function showFinalResult() {
-    let quizBox = document.getElementById('quiz-box'); // ይህ ID በ HTMLህ መኖሩን አረጋግጥ
-    let name = document.getElementById('userNameInput').value || "Student"; 
-    let subject = quizQuestions[0].cat; 
-    let percent = Math.round((score / quizQuestions.length) * 100);
-    
-    // ውጤቱን ወደ Leaderboard መዝግብ
-    saveScore(name, subject, percent);
-    
-    // ለተማሪው ውጤቱን በስክሪን ላይ አሳይ
-    quizBox.innerHTML = `
-        <div class="result-container" style="text-align: center; padding: 20px;">
-            <h2>Quiz Completed!</h2>
-            <p style="font-size: 24px;">Your Score: <strong>${score} / ${quizQuestions.length}</strong></p>
-            <p style="font-size: 20px;">Percentage: <strong>${percent}%</strong></p>
-            <button onclick="location.reload()" style="padding: 10px 20px; cursor: pointer; border-radius: 10px; background: #007bff; color: white; border: none;">Go Back Home</button>
-        </div>
-    `;
-}
-
-// 3. በሰንጠረዥ ማሳየት
 function displayLeaderboard() {
     const leaderboardBody = document.getElementById('leaderboard-body');
-    if (!leaderboardBody) return; // ሰንጠረዡ ከሌለ ኮዱ እንዳይበላሽ
+    if (!leaderboardBody) return;
 
     const leaderboard = JSON.parse(localStorage.getItem('studyHubLeaderboard')) || [];
-    
     leaderboardBody.innerHTML = ''; 
-    
     leaderboard.forEach((entry, index) => {
         const row = `
             <tr>
@@ -698,22 +658,33 @@ function displayLeaderboard() {
                 <td style="padding: 10px; border: 1px solid #ddd;">${entry.name}</td>
                 <td style="padding: 10px; border: 1px solid #ddd;">${entry.subject}</td>
                 <td style="padding: 10px; border: 1px solid #ddd;">${entry.score}%</td>
-            </tr>
-        `;
+            </tr>`;
         leaderboardBody.innerHTML += row;
     });
 }
 
-// ቦርዱን ለማጥፋት
 function clearLeaderboard() {
-    if(confirm("Are you sure you want to clear the leaderboard?")) {
+    if(confirm("ውጤቶችን በሙሉ ማጥፋት ትፈልጋለህ?")) {
         localStorage.removeItem('studyHubLeaderboard');
         displayLeaderboard();
     }
 }
 
-// ድረ-ገጹ ሲከፈት ሊደርቦርዱን እንዲያሳይ
-window.onload = displayLeaderboard;
+// --- 3. የፍተሻ መከላከያ (Disable Inspect) ---
+document.onkeydown = function(e) {
+    if(e.keyCode == 123) return false;
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
+    if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
+    if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
+};
+document.addEventListener('contextmenu', event => event.preventDefault());
+
+// --- 4. ገጹ ሲከፈት ሁሉንም ፋንክሽኖች አንቃ ---
+window.addEventListener('DOMContentLoaded', () => {
+    initDarkMode();
+    displayLeaderboard();
+});
 
 
 
