@@ -187,37 +187,7 @@ body.dark-theme #main-content,
 body.dark-theme #quiz-area-wrapper {
     background-color: transparent;
 }
-/* ለእያንዳንዱ ሰብጀክት የተለየ ቦርደር ከለር */
-.geo-theme { border-top: 6px solid #2ecc71; }   /* አረንጓዴ */
-.hist-theme { border-top: 6px solid #e67e22; }  /* ብርቱካን */
-.eng-theme { border-top: 6px solid #3498db; }   /* ሰማያዊ */
-.math-theme { border-top: 6px solid #e74c3c; }  /* ቀይ */
-.eco-theme { border-top: 6px solid #9b59b6; }   /* ሐምራዊ */
-.apt-theme { border-top: 6px solid #f1c40f; }   /* ቢጫ */
 
-/* Natural Science */
-.bio-theme { border-top: 6px solid #1abc9c; }
-.phy-theme { border-top: 6px solid #2980b9; }
-.chem-theme { border-top: 6px solid #d35400; }
-
-/* የካርዶቹ አጠቃላይ ዲዛይን */
-.subject-card {
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    transition: 0.3s ease;
-    width: 200px;
-}
-
-.subject-card:hover {
-    transform: translateY(-10px);
-}
-
-/* ርዕሱ ከጥያቄው ጋር እንዳይጋፋ (በፎቶው ያየነው ችግር መፍትሄ) */
-#main-title {
-    position: relative;
     margin-bottom: 40px;
     text-align: center;
     z-index: 1;
