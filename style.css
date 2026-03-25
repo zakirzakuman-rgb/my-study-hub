@@ -199,7 +199,19 @@ body.dark-theme #quiz-area-wrapper {
     margin-bottom: 20px;
     flex-wrap: wrap; /* ስልኩ ጠባብ ሲሆን ወደ ታች እንዲወርዱ */
 }
-.nav-back{
+.back-btn{
     background-color:red;
     padding-top:30px;
+}
+.subject-card:nth-child(1) { border-top: 5px solid #2ecc71; } /* Geography - አረንጓዴ */
+.subject-card:nth-child(2) { border-top: 5px solid #e67e22; } /* History - ብርቱካን */
+.subject-card:nth-child(3) { border-top: 5px solid #3498db; } /* English - ሰማያዊ */
+
+.subject-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px auto;
+    width: 90%; /* በስልክ ሲታይ ሙሉ እንዲሆን */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
