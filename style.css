@@ -216,3 +216,9 @@ body.dark-theme .quiz-answer-btn:hover {
   text-transform: uppercase;
   letter-spacing: 1px;
 }
+social-tab{
+    background-color:red;
+    desplay: flex;
+    transtion: 0.5s;
+    padding-lift: 10px;
+}
