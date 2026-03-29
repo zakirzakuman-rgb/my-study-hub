@@ -296,3 +296,11 @@ social-tab{
   color: white;
   box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
 }
+.geo-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 15px;
+  cursor: pointer;
+}
