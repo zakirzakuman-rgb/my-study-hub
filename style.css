@@ -286,13 +286,13 @@ social-tab{
 
 /* ማውሱ ሲያርፍበት (Hover) */
 .tab-btn:hover {
-  color: #000;
-  background-color: #e0e0e0;
+  color: #435665;
+  background-color: #121452;
 }
 
 /* የተመረጠው ታብ (Active Tab) */
 .tab-btn.active {
-  background-color: #007bff; /* ሰማያዊ ቀለም */
+  background-color: #983434; /* ሰማያዊ ቀለም */
   color: white;
   box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
 }
