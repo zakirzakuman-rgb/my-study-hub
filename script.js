@@ -515,20 +515,7 @@ function startQuiz(subject) {
         alert(subject + " በሚለው ሰብጀክት ጥያቄ አልተገኘም!");
         return;
     }
-    function goHome() {
-    // 1. የጥያቄ ማሳያውን ደብቅ
-    document.getElementById('quiz-area-wrapper').style.display = 'none';
-    
-    // 2. ዋናውን ይዘት (Cards) መልሰህ አሳይ
-    document.getElementById('main-content').style.display = 'block';
 
-    // 3. የጠፉትን Footer እና Resources መልሰህ አሳይ (ይህ ነው አዲሱ ኮድ)
-    if(document.querySelector('.footer')) {
-        document.querySelector('.footer').style.display = 'block';
-    }
-    if(document.querySelector('.resources-section')) {
-        document.querySelector('.resources-section').style.display = 'block';
-    }
 }
 rces-section').style.display = 'block';
 }
