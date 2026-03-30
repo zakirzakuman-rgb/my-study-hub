@@ -515,7 +515,14 @@ function startQuiz(subject) {
         alert(subject + " በሚለው ሰብጀክት ጥያቄ አልተገኘም!");
         return;
     }
-
+function goBack() {
+    document.getElementById('quiz-area-wrapper').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    
+    // የተደበቁትን ክፍሎች መልሰህ አሳይ
+    document.querySelector('.footer').style.display = 'block';
+    document.querySelector('.resources-section').style.display = 'block';
+}
     quizQuestions = shuffleArray([...filtered]);
     currentQuestionIndex = 0;
     score = 0;
