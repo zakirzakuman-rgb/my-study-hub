@@ -502,8 +502,15 @@ function switchStream(stream) {
     document.getElementById('natural-subjects').style.display = (stream === 'natural' ? 'flex' : 'none');
 }
 
+// --- GLOBAL VARIABLES ---
+let currentQuestionIndex = 0;
+let score = 0;
+let quizQuestions = [];
+let timer;
+let timeLeft = 30;
+
+// --- 1. START QUIZ (Hides Footer & Resources) ---
 function startQuiz(subject) {
-    // 1. ጥያቄዎቹን ፈልግ
     if (typeof allQuestions === 'undefined') {
         alert("ጥያቄዎቹ አልተጫኑም! እባክህ allQuestions ዝርዝር መኖሩን አረጋግጥ።");
         return;
@@ -516,17 +523,14 @@ function startQuiz(subject) {
         return;
     }
 
-}
-rces-section').style.display = 'block';
-}
     quizQuestions = shuffleArray([...filtered]);
     currentQuestionIndex = 0;
     score = 0;
 
-    // 2. ገጾችን ደብቅ (እዚህ ጋር ነው ማስተካከያው)
+    // ገጾችን ደብቅ
     document.getElementById('main-content').style.display = 'none';
     
-    // Footer እና Resources ክፍሎችን ደብቅ (በክላስ ስማቸው መሰረት)
+    // Footer እና Resources ክፍሎችን ደብቅ
     if(document.querySelector('.footer')) {
         document.querySelector('.footer').style.display = 'none';
     }
@@ -534,18 +538,29 @@ rces-section').style.display = 'block';
         document.querySelector('.resources-section').style.display = 'none';
     }
 
-    // 3. የጥያቄ ማሳያውን አሳይ
     document.getElementById('quiz-area-wrapper').style.display = 'block';
-
     showQuestion();
 }
 
+// --- 2. GO HOME (Shows Footer & Resources Again) ---
+function goHome() {
+    document.getElementById('quiz-area-wrapper').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+
+    // የተደበቁትን ክፍሎች መልሰህ አሳይ
+    if(document.querySelector('.footer')) {
+        document.querySelector('.footer').style.display = 'block';
+    }
+    if(document.querySelector('.resources-section')) {
+        document.querySelector('.resources-section').style.display = 'block';
+    }
+}
+
+// --- 3. SHOW QUESTION & TIMER ---
 function showQuestion() {
     clearInterval(timer);
     timeLeft = 30;
     let q = quizQuestions[currentQuestionIndex];
-    
-    // HTML ላይ ያለው 'quiz-box' ውስጥ ነው የምንጽፈው
     let quizBox = document.getElementById('quiz-box');
     let shuffledOptions = shuffleArray([...q.options]);
 
@@ -578,6 +593,7 @@ function startTimer() {
     }, 1000);
 }
 
+// --- 4. CHECK ANSWER & SPEECH ---
 function checkAnswer(selected, correct) {
     clearInterval(timer);
     const buttons = document.querySelectorAll('.quiz-answer-btn');
@@ -593,31 +609,14 @@ function checkAnswer(selected, correct) {
             btn.style.color = "white";
         }
     });
-if (selected === correct) {
-    score++;
-    // ብሮውዘሩ ድምፅ የሚችል ከሆነ ይናገራል፣ ካልቻለ ዝም ብሎ ያልፋል
-    try {
-        speak("Correct!");
-    } catch(e) {
-        console.log("Speech failed, but moving on...");
-    }
-} else {
-    try {
-        speak("Incorrect. The answer is " + correct);
-    } catch(e) {
-        console.log("Speech failed, but moving on...");
-    }
-}
 
-// ድምፁ ቢሰራም ባይሰራም ከ 2.5 ሰከንድ በኋላ ወደ ቀጣዩ ጥያቄ ይሄዳል
-setTimeout(() => {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < quizQuestions.length) {
-        showQuestion();
+    if (selected === correct) {
+        score++;
+        speak("Correct!");
     } else {
-        showFinalResult();
+        speak("Incorrect. The answer is " + correct);
     }
-}, 2500);
+
     setTimeout(() => {
         currentQuestionIndex++;
         if (currentQuestionIndex < quizQuestions.length) {
@@ -628,10 +627,21 @@ setTimeout(() => {
     }, 2500);
 }
 
+// --- 5. SPEECH FUNCTION ---
+function speak(text) {
+    if ('speechSynthesis' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        window.speechSynthesis.speak(utterance);
+    }
+}
+
+// --- 6. FINAL RESULT ---
 function showFinalResult() {
     let quizBox = document.getElementById('quiz-box');
     let percent = Math.round((score / quizQuestions.length) * 100);
-    let message = percent >= 80 ? "Excellent job, Zakir! 🏆" : "Good effort! Keep practicing. 💪";
+    let savedName = localStorage.getItem('studentName') || "Student";
+    let message = percent >= 80 ? `Excellent job, ${savedName}! 🏆` : "Good effort! Keep practicing. 💪";
 
     quizBox.innerHTML = `
         <h2 style="color: #007bff; text-align:center;">QUIZ COMPLETED</h2>
@@ -642,12 +652,38 @@ function showFinalResult() {
         </button>
     `;
     
-    let name = document.getElementById('userNameInput').value;
-    let subject = quizQuestions[0].cat;
-    saveScore(name, subject, percent);
+    saveScore(savedName, quizQuestions[0].cat, percent);
 }
 
-// --- DARK MODE ---
+// --- 7. USER MANAGEMENT (LocalStorage) ---
+function saveUserName() {
+    const nameInput = document.getElementById('userNameInput').value;
+    const streamInput = document.getElementById('streamChoice').value;
+
+    if (nameInput && streamInput) {
+        localStorage.setItem('studentName', nameInput);
+        localStorage.setItem('studentStream', streamInput);
+        document.getElementById('login-overlay').style.display = 'none';
+    } else {
+        alert("Please enter your name and select a stream!");
+    }
+}
+
+function logout() {
+    localStorage.removeItem('studentName');
+    localStorage.removeItem('studentStream');
+    location.reload();
+}
+
+// --- 8. UTILITIES (Shuffle, Dark Mode, Leaderboard) ---
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
 function initDarkMode() {
     const darkModeToggle = document.getElementById('dark-mode-toggle');
     if (darkModeToggle) {
@@ -659,7 +695,6 @@ function initDarkMode() {
     }
 }
 
-// --- LEADERBOARD ---
 function saveScore(name, subject, scorePercent) {
     let leaderboard = JSON.parse(localStorage.getItem('studyHubLeaderboard')) || [];
     leaderboard.push({ name: name, subject: subject, score: scorePercent });
@@ -668,47 +703,15 @@ function saveScore(name, subject, scorePercent) {
     localStorage.setItem('studyHubLeaderboard', JSON.stringify(leaderboard));
 }
 
-// ገጹ ሲከፈት
-window.addEventListener('DOMContentLoaded', () => {
-    initDarkMode();
-});
-function saveUserName() {
-    const nameInput = document.getElementById('userNameInput').value;
-    const streamInput = document.getElementById('streamChoice').value;
-
-    if (nameInput && streamInput) {
-        // ስሙን እና የትምህርት ዘርፉን በኮምፒውተሩ ላይ ሴቭ ያደርጋል
-        localStorage.setItem('studentName', nameInput);
-        localStorage.setItem('studentStream', streamInput);
-        
-        // ሎግይን ቦክሱን ይደብቃል
-        document.getElementById('login-overlay').style.display = 'none';
-        
-        // ለተማሪው የእንኳን ደህና መጣህ መልዕክት ማሳየት ትችላለህ
-        console.log("Welcome " + nameInput);
-    } else {
-        alert("Please enter your name and select a stream!");
-    }
-}
-// ገጹ እንደተከፈተ ወዲያውኑ የሚሠራ
+// --- 9. PAGE LOAD ---
 window.onload = function() {
+    initDarkMode();
     const savedName = localStorage.getItem('studentName');
     const savedStream = localStorage.getItem('studentStream');
 
     if (savedName && savedStream) {
-        // ስሙ ቀድሞ ሴቭ ተደርጓል፣ ስለዚህ ሎግይኑን አታሳየው
         document.getElementById('login-overlay').style.display = 'none';
-        
-        // በገጹ ላይ "Welcome, Zakir" ብለህ እንዲጽፍ ማድረግ ትችላለህ
-        // ለምሳሌ፡ document.getElementById('welcomeText').innerText = "Hello, " + savedName;
     } else {
-        // ስሙ የለም፣ ሎግይኑ እንዲታይ አድርግ
         document.getElementById('login-overlay').style.display = 'flex';
     }
 };
-function logout() {
-    localStorage.removeItem('studentName');
-    localStorage.removeItem('studentStream');
-    location.reload(); // ገጹን Refresh አድርጎ ሎግይኑን መልሶ ያመጣል
-}
-
