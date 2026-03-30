@@ -502,22 +502,64 @@ function switchStream(stream) {
     document.getElementById('natural-subjects').style.display = (stream === 'natural' ? 'flex' : 'none');
 }
 
-// --- 1. GLOBAL VARIABLES (አንድ ጊዜ ብቻ መታወጅ አለባቸው) ---
+// --- 1. GLOBAL VARIABLES ---
 let currentQuestionIndex = 0;
 let score = 0;
 let quizQuestions = [];
 let timer;
 let timeLeft = 30;
 
-// --- 2. START QUIZ (ክፍሎችን የመደበቅ ስራ) ---
+// --- 2. START APP (ይህ ስም ከ HTML "startApp()" ጋር መመሳሰል አለበት) ---
+function startApp() {
+    const nameInput = document.getElementById('userNameInput').value;
+    const streamInput = document.getElementById('streamChoice').value;
+
+    if (nameInput && streamInput) {
+        localStorage.setItem('studentName', nameInput);
+        localStorage.setItem('studentStream', streamInput);
+        
+        // Login ደብቅና ዋናውን ገጽ አሳይ
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        
+        // የተማሪውን ስም በከፊል ርዕሱ ላይ ጨምር
+        document.getElementById('main-title').innerText = nameInput + "'s Study Hub";
+        
+        // የመረጠውን ስትሪም በራስ-ሰር አሳይ
+        switchStream(streamInput);
+    } else {
+        alert("እባክህ ስምህንና የምትማርበትን ዘርፍ ምረጥ!");
+    }
+}
+
+// --- 3. SWITCH STREAM (Natural/Social) ---
+function switchStream(stream) {
+    const socialDiv = document.getElementById('social-subjects');
+    const naturalDiv = document.getElementById('natural-subjects');
+    const socialTab = document.getElementById('social-tab');
+    const naturalTab = document.getElementById('natural-tab');
+
+    if (stream === 'social') {
+        socialDiv.style.display = 'grid';
+        naturalDiv.style.display = 'none';
+        socialTab.classList.add('active');
+        naturalTab.classList.remove('active');
+    } else {
+        socialDiv.style.display = 'none';
+        naturalDiv.style.display = 'grid';
+        naturalTab.classList.add('active');
+        socialTab.classList.remove('active');
+    }
+}
+
+// --- 4. START QUIZ (ክፍሎችን የመደበቅ ስራ) ---
 function startQuiz(subject) {
     if (typeof allQuestions === 'undefined') {
-        alert("ጥያቄዎቹ አልተጫኑም! እባክህ allQuestions ዝርዝር መኖሩን አረጋግጥ።");
+        alert("ጥያቄዎቹ አልተጫኑም!");
         return;
     }
 
     let filtered = allQuestions.filter(q => q.cat === subject);
-    
     if (filtered.length === 0) {
         alert(subject + " በሚለው ሰብጀክት ጥያቄ አልተገኘም!");
         return;
@@ -527,38 +569,27 @@ function startQuiz(subject) {
     currentQuestionIndex = 0;
     score = 0;
 
-    // ገጾችን የመደበቅ ስራ
-    const mainContent = document.querySelector('.container');
-    if(mainContent) mainContent.style.display = 'none';
+    // ገጾችን መደበቅ (ID 'main-content' መሆኑን አረጋግጫለሁ)
+    document.getElementById('main-content').style.display = 'none';
+    
+    // Footer እና Resources መደበቅ
+    if(document.querySelector('.footer')) document.querySelector('.footer').style.display = 'none';
+    if(document.querySelector('.resources-section')) document.querySelector('.resources-section').style.display = 'none';
 
-    // Footer እና Resources ደብቅ
-    const footer = document.querySelector('.footer');
-    const resources = document.querySelector('.resources-section');
-    if(footer) footer.style.display = 'none';
-    if(resources) resources.style.display = 'none';
-
-    // የጥያቄ ማሳያውን አሳይ
-    const quizArea = document.getElementById('quiz-area-wrapper');
-    if(quizArea) quizArea.style.display = 'block';
-
+    document.getElementById('quiz-area-wrapper').style.display = 'block';
     showQuestion();
 }
 
-// --- 3. GO HOME (ክፍሎችን የመመለስ ስራ) ---
+// --- 5. GO HOME (ክፍሎችን የመመለስ ስራ) ---
 function goHome() {
-    const quizArea = document.getElementById('quiz-area-wrapper');
-    if(quizArea) quizArea.style.display = 'none';
+    document.getElementById('quiz-area-wrapper').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
 
-    const mainContent = document.querySelector('.container');
-    const footer = document.querySelector('.footer');
-    const resources = document.querySelector('.resources-section');
-
-    if(mainContent) mainContent.style.display = 'block';
-    if(footer) footer.style.display = 'block';
-    if(resources) resources.style.display = 'block';
+    if(document.querySelector('.footer')) document.querySelector('.footer').style.display = 'block';
+    if(document.querySelector('.resources-section')) document.querySelector('.resources-section').style.display = 'block';
 }
 
-// --- 4. SHOW QUESTION & TIMER ---
+// --- 6. SHOW QUESTION & TIMER ---
 function showQuestion() {
     clearInterval(timer);
     timeLeft = 30;
@@ -595,7 +626,7 @@ function startTimer() {
     }, 1000);
 }
 
-// --- 5. CHECK ANSWER & SPEECH ---
+// --- 7. CHECK ANSWER & SPEECH ---
 function checkAnswer(selected, correct) {
     clearInterval(timer);
     const buttons = document.querySelectorAll('.quiz-answer-btn');
@@ -637,39 +668,7 @@ function speak(text) {
     }
 }
 
-// --- 6. FINAL RESULT & LEADERBOARD ---
-function showFinalResult() {
-    let quizBox = document.getElementById('quiz-box');
-    let percent = Math.round((score / quizQuestions.length) * 100);
-    let savedName = localStorage.getItem('studentName') || "Student";
-    let message = percent >= 80 ? `Excellent job, ${savedName}! 🏆` : "Good effort! Keep practicing. 💪";
-
-    quizBox.innerHTML = `
-        <h2 style="color: #007bff; text-align:center;">QUIZ COMPLETED</h2>
-        <div style="font-size: 50px; font-weight: bold; text-align:center; margin: 20px 0;">${score} / ${quizQuestions.length}</div>
-        <p style="font-size: 1.3rem; text-align:center; margin-bottom: 25px;">${message} (${percent}%)</p>
-        <button onclick="goHome()" style="width:100%; padding: 18px; background: #28a745; color: white; border: none; border-radius: 12px; cursor: pointer; font-size:18px; font-weight: bold;">
-            FINISH & GO HOME
-        </button>
-    `;
-    saveScore(savedName, quizQuestions[0].cat, percent);
-}
-
-// --- 7. USER MANAGEMENT (LocalStorage) ---
-function saveUserName() {
-    const nameInput = document.getElementById('userNameInput').value;
-    const streamInput = document.getElementById('streamChoice').value;
-
-    if (nameInput && streamInput) {
-        localStorage.setItem('studentName', nameInput);
-        localStorage.setItem('studentStream', streamInput);
-        document.getElementById('login-overlay').style.display = 'none';
-    } else {
-        alert("Please enter your name and select a stream!");
-    }
-}
-
-// --- 8. UTILITIES (Shuffle, Dark Mode, Save Score) ---
+// --- 8. UTILITIES (Shuffle, Dark Mode) ---
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -689,14 +688,6 @@ function initDarkMode() {
     }
 }
 
-function saveScore(name, subject, scorePercent) {
-    let leaderboard = JSON.parse(localStorage.getItem('studyHubLeaderboard')) || [];
-    leaderboard.push({ name: name, subject: subject, score: scorePercent });
-    leaderboard.sort((a, b) => b.score - a.score);
-    leaderboard = leaderboard.slice(0, 5);
-    localStorage.setItem('studyHubLeaderboard', JSON.stringify(leaderboard));
-}
-
 // --- 9. PAGE LOAD ---
 window.onload = function() {
     initDarkMode();
@@ -705,7 +696,11 @@ window.onload = function() {
 
     if (savedName && savedStream) {
         document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('main-title').innerText = savedName + "'s Study Hub";
+        switchStream(savedStream);
     } else {
         document.getElementById('login-overlay').style.display = 'flex';
+        document.getElementById('main-content').style.display = 'none';
     }
 };
