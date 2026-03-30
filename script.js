@@ -437,7 +437,206 @@ const allQuestions = [
 { cat: "Chemistry", q: "Functional group of Carboxylic acids is:", options: ["-CHO", "-CO-", "-COOH", "-OH"], a: "-COOH" }
 ];
 
-// 1. ጥያቄዎቹን የሚዘበራርቅ ፈንክሽን
+// --- 1. ተለዋዋጮች (VARIABLES) ---
+let currentQuestionIndex = 0;
+let score = 0;
+let quizQuestions = [];
+let timer;
+let timeLeft = 30;
+
+// --- 2. VOICE ASSISTANT ---
+function speak(text) {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = text;
+        msg.lang = 'en-US';
+        window.speechSynthesis.speak(msg);
+    }
+}
+
+// --- 3. START APP (HTML ላይ ካለው startApp() ጋር የተገናኘ) ---
+function startApp() {
+    const nameInput = document.getElementById('userNameInput').value;
+    const streamInput = document.getElementById('streamChoice').value;
+
+    if (nameInput && streamInput) {
+        localStorage.setItem('studentName', nameInput);
+        localStorage.setItem('studentStream', streamInput);
+        
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        
+        // በታይትሉ ላይ የተማሪውን ስም መጨመር
+        const mainTitle = document.getElementById('main-title');
+        if(mainTitle) mainTitle.innerText = nameInput + "'s Study Hub";
+        
+        switchStream(streamInput);
+    } else {
+        alert("እባክህ ስምህንና ዘርፍህን ምረጥ!");
+    }
+}
+
+// --- 4. SWITCH STREAM ---
+function switchStream(stream) {
+    const socialDiv = document.getElementById('social-subjects');
+    const naturalDiv = document.getElementById('natural-subjects');
+    
+    if(socialDiv) socialDiv.style.display = (stream === 'social' ? 'grid' : 'none');
+    if(naturalDiv) naturalDiv.style.display = (stream === 'natural' ? 'grid' : 'none');
+}
+
+// --- 5. START QUIZ ---
+function startQuiz(subject) {
+    if (typeof allQuestions === 'undefined') {
+        alert("ጥያቄዎቹ አልተጫኑም! እባክህ allQuestions ዝርዝር መኖሩን አረጋግጥ።");
+        return;
+    }
+
+    let filtered = allQuestions.filter(q => q.cat === subject);
+    
+    if (filtered.length === 0) {
+        alert(subject + " በሚለው ሰብጀክት ጥያቄ አልተገኘም!");
+        return;
+    }
+
+    quizQuestions = shuffleArray([...filtered]);
+    currentQuestionIndex = 0;
+    score = 0;
+
+    // ገጾችን ደብቅ
+    document.getElementById('main-content').style.display = 'none';
+    
+    if(document.querySelector('.footer')) {
+        document.querySelector('.footer').style.display = 'none';
+    }
+    if(document.querySelector('.resources-section')) {
+        document.querySelector('.resources-section').style.display = 'none';
+    }
+
+    // የጥያቄ ማሳያውን አሳይ
+    document.getElementById('quiz-area-wrapper').style.display = 'block';
+    showQuestion();
+}
+
+// --- 6. SHOW QUESTION ---
+function showQuestion() {
+    clearInterval(timer);
+    timeLeft = 30;
+    let q = quizQuestions[currentQuestionIndex];
+    let quizBox = document.getElementById('quiz-box');
+    let shuffledOptions = shuffleArray([...q.options]);
+
+    quizBox.innerHTML = `
+        <div id="timer-display" style="font-size:24px; color:red; font-weight:bold; text-align:center; margin-bottom:10px;">Time: 30s</div>
+        <h2 style="text-align:center; color:#007bff;">${q.cat}</h2>
+        <p style="font-size:1.3rem; font-weight:bold; margin:20px 0;">${currentQuestionIndex + 1}. ${q.q}</p>
+        <div id="options-container"></div>
+    `;
+
+    shuffledOptions.forEach(opt => {
+        let btn = document.createElement('button');
+        btn.innerText = opt;
+        btn.className = "quiz-answer-btn";
+        btn.onclick = () => checkAnswer(opt, q.a);
+        document.getElementById('options-container').appendChild(btn);
+    });
+    startTimer();
+}
+
+// --- 7. TIMER ---
+function startTimer() {
+    timer = setInterval(() => {
+        timeLeft--;
+        const timerDisp = document.getElementById('timer-display');
+        if(timerDisp) timerDisp.innerText = `Time: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+            clearInterval(timer);
+            checkAnswer(null, quizQuestions[currentQuestionIndex].a);
+        }
+    }, 1000);
+}
+
+// --- 8. CHECK ANSWER ---
+function checkAnswer(selected, correct) {
+    clearInterval(timer);
+    const buttons = document.querySelectorAll('.quiz-answer-btn');
+    
+    buttons.forEach(btn => {
+        btn.disabled = true;
+        if (btn.innerText === correct) {
+            btn.style.background = "#28a745"; 
+            btn.style.color = "white";
+        }
+        if (btn.innerText === selected && selected !== correct) {
+            btn.style.background = "#dc3545"; 
+            btn.style.color = "white";
+        }
+    });
+
+    if (selected === correct) {
+        score++;
+        speak("Correct!");
+    } else {
+        speak("Incorrect. The answer is " + correct);
+    }
+
+    // ከ 2.5 ሰከንድ በኋላ ወደ ቀጣዩ ጥያቄ ይሄዳል
+    setTimeout(() => {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < quizQuestions.length) {
+            showQuestion();
+        } else {
+            showFinalResult();
+        }
+    }, 2500);
+}
+
+// --- 9. FINAL RESULT ---
+function showFinalResult() {
+    let quizBox = document.getElementById('quiz-box');
+    let percent = Math.round((score / quizQuestions.length) * 100);
+    let name = localStorage.getItem('studentName') || "Student";
+    let message = percent >= 80 ? `Excellent job, ${name}! 🏆` : "Good effort! Keep practicing. 💪";
+
+    quizBox.innerHTML = `
+        <h2 style="color: #007bff; text-align:center;">QUIZ COMPLETED</h2>
+        <div style="font-size: 50px; font-weight: bold; text-align:center; margin: 20px 0;">${score} / ${quizQuestions.length}</div>
+        <p style="font-size: 1.3rem; text-align:center; margin-bottom: 25px;">${message} (${percent}%)</p>
+        <button onclick="goHome()" style="width:100%; padding: 18px; background: #28a745; color: white; border: none; border-radius: 12px; cursor: pointer; font-size:18px; font-weight: bold;">
+            FINISH & GO HOME
+        </button>
+    `;
+    
+    let subject = quizQuestions[0].cat;
+    saveScore(name, subject, percent);
+}
+
+// --- 10. UTILITIES (Home, Dark Mode, Shuffle, Leaderboard) ---
+function goHome() {
+    clearInterval(timer);
+    document.getElementById('quiz-area-wrapper').style.display = 'none';
+    document.getElementById('main-content').style.display = 'block';
+    
+    if(document.querySelector('.footer')) document.querySelector('.footer').style.display = 'block';
+    if(document.querySelector('.resources-section')) document.querySelector('.resources-section').style.display = 'block';
+
+    let stream = localStorage.getItem('studentStream') || 'social';
+    switchStream(stream);
+    window.scrollTo(0, 0);
+}
+
+function initDarkMode() {
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    if (darkModeToggle) {
+        darkModeToggle.onclick = function() {
+            document.body.classList.toggle('dark-theme');
+            const modeIcon = document.getElementById('mode-icon');
+            if(modeIcon) modeIcon.textContent = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
+        };
+    }
+}
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -446,268 +645,33 @@ function shuffleArray(array) {
     return array;
 }
 
-// 2. ተለዋዋጮች
-let quizQuestions = [];
-let currentQuestionIndex = 0;
-let score = 0;
-let timer;
-let timeLeft = 30;
-
-// VOICE ASSISTANT
-function speak(text) {
-    window.speechSynthesis.cancel();
-    const msg = new SpeechSynthesisUtterance();
-    msg.text = text;
-    window.speechSynthesis.speak(msg);
-}
-
-// HOME BUTTON
-function goHome() {
-    clearInterval(timer);
-    
-    // ጥያቄው ያለበትን ሙሉ ቦታ ደብቅ
-    const quizWrapper = document.getElementById('quiz-area-wrapper');
-    if (quizWrapper) quizWrapper.style.display = 'none';
-
-    // ዋናውን ገጽ አሳይ
-    document.getElementById('main-content').style.display = 'block';
-    
-    // ሰብጀክቶቹ በትክክል እንዲታዩ
-    let stream = document.getElementById('streamChoice').value || 'social';
-    switchStream(stream);
-    
-    window.scrollTo(0, 0);
-}
-
-// START APP
-function startApp() {
-    let nameInput = document.getElementById('userNameInput');
-    let streamInput = document.getElementById('streamChoice');
-
-    if (!nameInput.value || !streamInput.value) {
-        return alert("እባክህ ስምህንና ዘርፍህን ምረጥ!");
-    }
-    
-    let name = nameInput.value;
-    let stream = streamInput.value;
-
-    document.getElementById('login-overlay').style.display = 'none';
-    document.getElementById('main-content').style.display = 'block';
-    document.getElementById('main-title').innerText = name + "'s Hub";
-    switchStream(stream);
-}
-
-function switchStream(stream) {
-    document.getElementById('social-subjects').style.display = (stream === 'social' ? 'flex' : 'none');
-    document.getElementById('natural-subjects').style.display = (stream === 'natural' ? 'flex' : 'none');
-}
-
-function startQuiz(subject) {
-    // 1. ጥያቄዎቹን ፈልግ
-    if (typeof allQuestions === 'undefined') {
-        alert("ጥያቄዎቹ አልተጫኑም! እባክህ allQuestions ዝርዝር መኖሩን አረጋግጥ።");
-        return;
-    }
-
-    let filtered = allQuestions.filter(q => q.cat === subject);
-    
-    if (filtered.length === 0) {
-        alert(subject + " በሚለው ሰብጀክት ጥያቄ አልተገኘም!");
-        return;
-    }
-
-}
-rces-section').style.display = 'block';
-}
-    quizQuestions = shuffleArray([...filtered]);
-    currentQuestionIndex = 0;
-    score = 0;
-
-    // 2. ገጾችን ደብቅ (እዚህ ጋር ነው ማስተካከያው)
-    document.getElementById('main-content').style.display = 'none';
-    
-    // Footer እና Resources ክፍሎችን ደብቅ (በክላስ ስማቸው መሰረት)
-    if(document.querySelector('.footer')) {
-        document.querySelector('.footer').style.display = 'none';
-    }
-    if(document.querySelector('.resources-section')) {
-        document.querySelector('.resources-section').style.display = 'none';
-    }
-
-    // 3. የጥያቄ ማሳያውን አሳይ
-    document.getElementById('quiz-area-wrapper').style.display = 'block';
-
-    showQuestion();
-}
-
-function showQuestion() {
-    clearInterval(timer);
-    timeLeft = 30;
-    let q = quizQuestions[currentQuestionIndex];
-    
-    // HTML ላይ ያለው 'quiz-box' ውስጥ ነው የምንጽፈው
-    let quizBox = document.getElementById('quiz-box');
-    let shuffledOptions = shuffleArray([...q.options]);
-
-    quizBox.innerHTML = `
-        <div id="timer-display" style="font-size:24px; color:red; font-weight:bold; text-align:center; margin-bottom:10px;">Time: 30s</div>
-        <h2 style="text-align:center; color:#007bff;">${q.cat}</h2>
-        <p style="font-size:1.3rem; font-weight:bold; margin:20px 0;">${currentQuestionIndex + 1}. ${q.q}</p>
-        <div id="options-container"></div>
-    `;
-
-    shuffledOptions.forEach(opt => {
-        let btn = document.createElement('button');
-        btn.innerText = opt;
-        btn.className = "quiz-answer-btn";
-        btn.onclick = () => checkAnswer(opt, q.a);
-        document.getElementById('options-container').appendChild(btn);
-    });
-    startTimer();
-}
-
-function startTimer() {
-    timer = setInterval(() => {
-        timeLeft--;
-        const timerDisp = document.getElementById('timer-display');
-        if(timerDisp) timerDisp.innerText = `Time: ${timeLeft}s`;
-        if (timeLeft <= 0) {
-            clearInterval(timer);
-            checkAnswer(null, quizQuestions[currentQuestionIndex].a);
-        }
-    }, 1000);
-}
-
-function checkAnswer(selected, correct) {
-    clearInterval(timer);
-    const buttons = document.querySelectorAll('.quiz-answer-btn');
-    
-    buttons.forEach(btn => {
-        btn.disabled = true;
-        if (btn.innerText === correct) {
-            btn.style.background = "#28a745"; 
-            btn.style.color = "white";
-        }
-        if (btn.innerText === selected && selected !== correct) {
-            btn.style.background = "#dc3545"; 
-            btn.style.color = "white";
-        }
-    });
-if (selected === correct) {
-    score++;
-    // ብሮውዘሩ ድምፅ የሚችል ከሆነ ይናገራል፣ ካልቻለ ዝም ብሎ ያልፋል
-    try {
-        speak("Correct!");
-    } catch(e) {
-        console.log("Speech failed, but moving on...");
-    }
-} else {
-    try {
-        speak("Incorrect. The answer is " + correct);
-    } catch(e) {
-        console.log("Speech failed, but moving on...");
-    }
-}
-
-// ድምፁ ቢሰራም ባይሰራም ከ 2.5 ሰከንድ በኋላ ወደ ቀጣዩ ጥያቄ ይሄዳል
-setTimeout(() => {
-    currentQuestionIndex++;
-    if (currentQuestionIndex < quizQuestions.length) {
-        showQuestion();
-    } else {
-        showFinalResult();
-    }
-}, 2500);
-    setTimeout(() => {
-        currentQuestionIndex++;
-        if (currentQuestionIndex < quizQuestions.length) {
-            showQuestion();
-        } else {
-            showFinalResult();
-        }
-    }, 2500);
-}
-
-function showFinalResult() {
-    let quizBox = document.getElementById('quiz-box');
-    let percent = Math.round((score / quizQuestions.length) * 100);
-    let message = percent >= 80 ? "Excellent job, Zakir! 🏆" : "Good effort! Keep practicing. 💪";
-
-    quizBox.innerHTML = `
-        <h2 style="color: #007bff; text-align:center;">QUIZ COMPLETED</h2>
-        <div style="font-size: 50px; font-weight: bold; text-align:center; margin: 20px 0;">${score} / ${quizQuestions.length}</div>
-        <p style="font-size: 1.3rem; text-align:center; margin-bottom: 25px;">${message} (${percent}%)</p>
-        <button onclick="goHome()" style="width:100%; padding: 18px; background: #28a745; color: white; border: none; border-radius: 12px; cursor: pointer; font-size:18px; font-weight: bold;">
-            FINISH & GO HOME
-        </button>
-    `;
-    
-    let name = document.getElementById('userNameInput').value;
-    let subject = quizQuestions[0].cat;
-    saveScore(name, subject, percent);
-}
-
-// --- DARK MODE ---
-function initDarkMode() {
-    const darkModeToggle = document.getElementById('dark-mode-toggle');
-    if (darkModeToggle) {
-        darkModeToggle.onclick = function() {
-            document.body.classList.toggle('dark-theme');
-            const modeIcon = document.getElementById('mode-icon');
-            if(modeIcon) modeIcon.textContent = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
-        };
-    }
-}
-
-// --- LEADERBOARD ---
 function saveScore(name, subject, scorePercent) {
-    let leaderboard = JSON.parse(localStorage.getItem('studyHubLeaderboard')) || [];
-    leaderboard.push({ name: name, subject: subject, score: scorePercent });
-    leaderboard.sort((a, b) => b.score - a.score);
-    leaderboard = leaderboard.slice(0, 5);
-    localStorage.setItem('studyHubLeaderboard', JSON.stringify(leaderboard));
+    let leaderboard = JSON.parse(localStorage.getItem('studyHubLeaderboard')) || [];
+    leaderboard.push({ name: name, subject: subject, score: scorePercent });
+    leaderboard.sort((a, b) => b.score - a.score);
+    leaderboard = leaderboard.slice(0, 5);
+    localStorage.setItem('studyHubLeaderboard', JSON.stringify(leaderboard));
 }
 
-// ገጹ ሲከፈት
-window.addEventListener('DOMContentLoaded', () => {
-    initDarkMode();
-});
-function saveUserName() {
-    const nameInput = document.getElementById('userNameInput').value;
-    const streamInput = document.getElementById('streamChoice').value;
-
-    if (nameInput && streamInput) {
-        // ስሙን እና የትምህርት ዘርፉን በኮምፒውተሩ ላይ ሴቭ ያደርጋል
-        localStorage.setItem('studentName', nameInput);
-        localStorage.setItem('studentStream', streamInput);
-        
-        // ሎግይን ቦክሱን ይደብቃል
-        document.getElementById('login-overlay').style.display = 'none';
-        
-        // ለተማሪው የእንኳን ደህና መጣህ መልዕክት ማሳየት ትችላለህ
-        console.log("Welcome " + nameInput);
-    } else {
-        alert("Please enter your name and select a stream!");
-    }
-}
-// ገጹ እንደተከፈተ ወዲያውኑ የሚሠራ
-window.onload = function() {
-    const savedName = localStorage.getItem('studentName');
-    const savedStream = localStorage.getItem('studentStream');
-
-    if (savedName && savedStream) {
-        // ስሙ ቀድሞ ሴቭ ተደርጓል፣ ስለዚህ ሎግይኑን አታሳየው
-        document.getElementById('login-overlay').style.display = 'none';
-        
-        // በገጹ ላይ "Welcome, Zakir" ብለህ እንዲጽፍ ማድረግ ትችላለህ
-        // ለምሳሌ፡ document.getElementById('welcomeText').innerText = "Hello, " + savedName;
-    } else {
-        // ስሙ የለም፣ ሎግይኑ እንዲታይ አድርግ
-        document.getElementById('login-overlay').style.display = 'flex';
-    }
-};
 function logout() {
-    localStorage.removeItem('studentName');
-    localStorage.removeItem('studentStream');
-    location.reload(); // ገጹን Refresh አድርጎ ሎግይኑን መልሶ ያመጣል
+    localStorage.removeItem('studentName');
+    localStorage.removeItem('studentStream');
+    location.reload();
 }
+
+// --- 11. PAGE LOAD LOGIC ---
+window.onload = function() {
+    initDarkMode();
+    const savedName = localStorage.getItem('studentName');
+    const savedStream = localStorage.getItem('studentStream');
+
+    if (savedName && savedStream) {
+        document.getElementById('login-overlay').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
+        document.getElementById('main-title').innerText = savedName + "'s Hub";
+        switchStream(savedStream);
+    } else {
+        document.getElementById('login-overlay').style.display = 'flex';
+        document.getElementById('main-content').style.display = 'none';
+    }
+};
