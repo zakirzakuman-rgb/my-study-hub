@@ -660,5 +660,43 @@ function saveScore(name, subject, scorePercent) {
 window.addEventListener('DOMContentLoaded', () => {
     initDarkMode();
 });
+function saveUserName() {
+    const nameInput = document.getElementById('userNameInput').value;
+    const streamInput = document.getElementById('streamChoice').value;
 
+    if (nameInput && streamInput) {
+        // ስሙን እና የትምህርት ዘርፉን በኮምፒውተሩ ላይ ሴቭ ያደርጋል
+        localStorage.setItem('studentName', nameInput);
+        localStorage.setItem('studentStream', streamInput);
+        
+        // ሎግይን ቦክሱን ይደብቃል
+        document.getElementById('login-overlay').style.display = 'none';
+        
+        // ለተማሪው የእንኳን ደህና መጣህ መልዕክት ማሳየት ትችላለህ
+        console.log("Welcome " + nameInput);
+    } else {
+        alert("Please enter your name and select a stream!");
+    }
+}
+// ገጹ እንደተከፈተ ወዲያውኑ የሚሠራ
+window.onload = function() {
+    const savedName = localStorage.getItem('studentName');
+    const savedStream = localStorage.getItem('studentStream');
+
+    if (savedName && savedStream) {
+        // ስሙ ቀድሞ ሴቭ ተደርጓል፣ ስለዚህ ሎግይኑን አታሳየው
+        document.getElementById('login-overlay').style.display = 'none';
+        
+        // በገጹ ላይ "Welcome, Zakir" ብለህ እንዲጽፍ ማድረግ ትችላለህ
+        // ለምሳሌ፡ document.getElementById('welcomeText').innerText = "Hello, " + savedName;
+    } else {
+        // ስሙ የለም፣ ሎግይኑ እንዲታይ አድርግ
+        document.getElementById('login-overlay').style.display = 'flex';
+    }
+};
+function logout() {
+    localStorage.removeItem('studentName');
+    localStorage.removeItem('studentStream');
+    location.reload(); // ገጹን Refresh አድርጎ ሎግይኑን መልሶ ያመጣል
+}
 
