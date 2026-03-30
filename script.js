@@ -502,9 +502,8 @@ function switchStream(stream) {
     document.getElementById('natural-subjects').style.display = (stream === 'natural' ? 'flex' : 'none');
 }
 
-// START QUIZ
 function startQuiz(subject) {
-    // 1. ጥያቄዎቹን ፈልግ (allQuestions የግድ መኖር አለበት)
+    // 1. ጥያቄዎቹን ፈልግ
     if (typeof allQuestions === 'undefined') {
         alert("ጥያቄዎቹ አልተጫኑም! እባክህ allQuestions ዝርዝር መኖሩን አረጋግጥ።");
         return;
@@ -521,8 +520,18 @@ function startQuiz(subject) {
     currentQuestionIndex = 0;
     score = 0;
 
-    // 2. ገጾችን ደብቅ
+    // 2. ገጾችን ደብቅ (እዚህ ጋር ነው ማስተካከያው)
     document.getElementById('main-content').style.display = 'none';
+    
+    // Footer እና Resources ክፍሎችን ደብቅ (በክላስ ስማቸው መሰረት)
+    if(document.querySelector('.footer')) {
+        document.querySelector('.footer').style.display = 'none';
+    }
+    if(document.querySelector('.resources-section')) {
+        document.querySelector('.resources-section').style.display = 'none';
+    }
+
+    // 3. የጥያቄ ማሳያውን አሳይ
     document.getElementById('quiz-area-wrapper').style.display = 'block';
 
     showQuestion();
