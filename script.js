@@ -597,21 +597,49 @@ function showFinalResult() {
     let quizBox = document.getElementById('quiz-box');
     let percent = Math.round((score / quizQuestions.length) * 100);
     let name = localStorage.getItem('studentName') || "Student";
-    let message = percent >= 80 ? `Excellent job, ${name}! 🏆` : "Good effort! Keep practicing. 💪";
+    let message = percent >= 80 ? `Excellent job, ${name}! 🏆` : `Good effort, ${name}! Keep practicing. 💪`;
 
+    // 1. ውጤቱን ሴቭ አድርግ
+    let subject = quizQuestions[0].cat;
+    saveScore(name, subject, percent);
+
+    // 2. የደረጃ ሰንጠረዡን (Leaderboard) ከማህደረ ትውስታ አምጣ
+    let leaderboard = JSON.parse(localStorage.getItem('studyHubLeaderboard')) || [];
+    let leaderboardHTML = leaderboard.map((item, index) => `
+        <tr style="border-bottom: 1px solid #ddd;">
+            <td style="padding: 10px;">${index + 1}</td>
+            <td style="padding: 10px;">${item.name}</td>
+            <td style="padding: 10px;">${item.subject}</td>
+            <td style="padding: 10px; font-weight: bold; color: #28a745;">${item.score}%</td>
+        </tr>
+    `).join('');
+
+    // 3. ሙሉውን ውጤት በ HTML አሳይ
     quizBox.innerHTML = `
         <h2 style="color: #007bff; text-align:center;">QUIZ COMPLETED</h2>
-        <div style="font-size: 50px; font-weight: bold; text-align:center; margin: 20px 0;">${score} / ${quizQuestions.length}</div>
-        <p style="font-size: 1.3rem; text-align:center; margin-bottom: 25px;">${message} (${percent}%)</p>
+        <div style="font-size: 50px; font-weight: bold; text-align:center; margin: 10px 0;">${score} / ${quizQuestions.length}</div>
+        <p style="font-size: 1.2rem; text-align:center; margin-bottom: 20px;">${message} (${percent}%)</p>
+        
+        <h3 style="text-align:center; margin-top: 10px;">🏆 Top 5 Scores</h3>
+        <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <thead style="background: #007bff; color: white;">
+                <tr>
+                    <th style="padding: 10px; text-align: left;">#</th>
+                    <th style="padding: 10px; text-align: left;">Name</th>
+                    <th style="padding: 10px; text-align: left;">Subject</th>
+                    <th style="padding: 10px; text-align: left;">Score</th>
+                </tr>
+            </thead>
+            <tbody style="color: #333;">
+                ${leaderboardHTML}
+            </tbody>
+        </table>
+
         <button onclick="goHome()" style="width:100%; padding: 18px; background: #28a745; color: white; border: none; border-radius: 12px; cursor: pointer; font-size:18px; font-weight: bold;">
             FINISH & GO HOME
         </button>
     `;
-    
-    let subject = quizQuestions[0].cat;
-    saveScore(name, subject, percent);
 }
-
 // --- 10. UTILITIES (Home, Dark Mode, Shuffle, Leaderboard) ---
 function goHome() {
     clearInterval(timer);
