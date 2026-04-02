@@ -430,3 +430,6 @@ body.dark-mode .footer-bottom {
     color: white;
     border-color: #007bff;
 }
+social-subjects:hover{
+    background-color: #566560;
+}
